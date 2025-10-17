@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user }) {
       // Verificar que el usuario pertenece al dominio autorizado
       if (user.email && user.email.endsWith('@magnitudshgroup.com')) {
         console.log('✅ Usuario autorizado:', user.email);
@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       // Agregar información adicional a la sesión si es necesario
       if (session.user && token.sub) {
-        (session.user as any).id = token.sub;
+        (session.user as { id: string }).id = token.sub;
       }
       return session;
     },
@@ -47,8 +47,6 @@ export const authOptions: NextAuthOptions = {
       
       // Si es una URL relativa, usar la base URL
       if (url.startsWith('/')) {
-        const pwaUrl = process.env.NEXT_PUBLIC_PWA_URL || 'http://localhost:3000';
-        
         // Redirigir al endpoint de auth-redirect que manejará el envío de datos a la PWA
         return `${baseUrl}/api/auth-redirect`;
       }
