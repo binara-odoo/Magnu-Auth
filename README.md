@@ -1,36 +1,150 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MAGNU Auth Service
 
-## Getting Started
+Servicio de autenticación independiente para la aplicación MAGNU PWA, construido con Next.js y NextAuth.js.
 
-First, run the development server:
+## 🚀 Características
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- ✅ **Autenticación con Google OAuth** - Solo miembros de la organización
+- ✅ **Next.js 15** con App Router
+- ✅ **NextAuth.js** para manejo de sesiones
+- ✅ **Redirección automática** a la PWA principal
+- ✅ **Páginas de error** personalizadas
+- ✅ **Diseño responsive** con Tailwind CSS
+
+## 📋 Requisitos
+
+- Node.js 18+
+- Cuenta de Google Cloud Console
+- PWA principal de MAGNU
+
+## 🛠️ Instalación
+
+1. **Navegar al directorio:**
+   ```bash
+   cd magnu-auth-service
+   ```
+
+2. **Instalar dependencias:**
+   ```bash
+   npm install
+   ```
+
+3. **Configurar variables de entorno:**
+   ```bash
+   cp env.example .env.local
+   ```
+   
+   Editar `.env.local` con tus configuraciones:
+   ```env
+   GOOGLE_CLIENT_ID="tu-google-client-id"
+   GOOGLE_CLIENT_SECRET="tu-google-client-secret"
+   NEXTAUTH_SECRET="tu-secret-para-firmar-tokens"
+   NEXTAUTH_URL="http://localhost:3001"
+   NEXT_PUBLIC_PWA_URL="http://localhost:3000"
+   ```
+
+4. **Configurar Google OAuth:**
+   - Ir a [Google Cloud Console](https://console.cloud.google.com/)
+   - Crear/editar proyecto
+   - Habilitar Google+ API
+   - Crear credenciales OAuth 2.0
+   - Agregar URLs autorizadas:
+     - `http://localhost:3001` (desarrollo)
+     - `https://tu-dominio.com` (producción)
+
+5. **Iniciar el servidor:**
+   ```bash
+   npm run dev
+   ```
+
+El servicio estará disponible en `http://localhost:3001`
+
+## 🔧 Configuración
+
+### Variables de Entorno
+
+| Variable | Descripción | Requerido |
+|----------|-------------|-----------|
+| `GOOGLE_CLIENT_ID` | ID del cliente Google OAuth | ✅ |
+| `GOOGLE_CLIENT_SECRET` | Secret del cliente Google OAuth | ✅ |
+| `NEXTAUTH_SECRET` | Clave para firmar tokens JWT | ✅ |
+| `NEXTAUTH_URL` | URL del servicio de auth | ✅ |
+| `NEXT_PUBLIC_PWA_URL` | URL de la PWA principal | ✅ |
+
+### Google OAuth Setup
+
+1. **Configurar dominio permitido:**
+   - En Google Cloud Console → OAuth consent screen
+   - Agregar el dominio de tu organización
+   - Configurar usuarios autorizados
+
+2. **URLs de redirección:**
+   - `http://localhost:3001/api/auth/callback/google` (desarrollo)
+   - `https://auth.tu-dominio.com/api/auth/callback/google` (producción)
+
+## 📡 Endpoints
+
+### Autenticación
+- `GET /api/auth/signin` - Página de inicio de sesión
+- `GET /api/auth/signout` - Cerrar sesión
+- `GET /api/auth/session` - Obtener sesión actual
+- `GET /api/auth/providers` - Proveedores disponibles
+
+### Páginas
+- `/` - Página principal del servicio
+- `/auth/signin` - Página de inicio de sesión
+- `/auth/error` - Página de errores
+
+## 🔗 Integración con PWA Principal
+
+### 1. En tu PWA principal (MagnuV2):
+
+```typescript
+// Redirigir al servicio de auth
+const handleLogin = () => {
+  window.location.href = 'http://localhost:3001/api/auth/signin';
+};
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. El servicio redirige automáticamente:
+- Después del login exitoso → PWA principal
+- En caso de error → Página de error
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Despliegue
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Vercel (Recomendado)
+```bash
+npm run build
+vercel --prod
+```
 
-## Learn More
+### Docker
+```bash
+docker build -t magnu-auth-service .
+docker run -p 3001:3001 magnu-auth-service
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 📝 Scripts Disponibles
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run dev          # Desarrollo en puerto 3001
+npm run build        # Compilar para producción
+npm run start        # Iniciar en producción
+npm run lint         # Linter
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🔒 Seguridad
 
-## Deploy on Vercel
+- ✅ **HTTPS en producción**
+- ✅ **Dominio restringido** en Google OAuth
+- ✅ **Tokens JWT** firmados
+- ✅ **Sesiones seguras**
+- ✅ **Headers de seguridad**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📞 Soporte
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Para soporte técnico o preguntas sobre la implementación, contacta al equipo de desarrollo de MAGNU.
+
+## 📄 Licencia
+
+MIT License - Ver archivo LICENSE para más detalles.
